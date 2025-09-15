@@ -22,6 +22,7 @@ test('defaults', t => {
         pad: ' ',
         property: 0,
         stringify: null,
+        trim: true,
         width: 2
       },
       {
@@ -31,6 +32,7 @@ test('defaults', t => {
         pad: ' ',
         property: 1,
         stringify: null,
+        trim: true,
         width: 2
       }
     ],
@@ -64,6 +66,15 @@ test('validation', t => {
     { column: 1, width: 1 },
     { column: 1, width: 1 }
   ]))
+  t.throws(() => parseOptions([
+    { pad: [], width: 1 }
+  ]))
+  t.throws(() => parseOptions([
+    { pad: '00', width: 1 }
+  ]))
+  t.throws(() => parseOptions([
+    { trim: 'unknown', width: 1 }
+  ]))
 })
 
 test('isIterable', t => {
@@ -78,4 +89,30 @@ test('isAsyncIterable', t => {
   t.false(isAsyncIterable('test'))
   t.false(isAsyncIterable({}))
   t.false(isAsyncIterable([]))
+})
+
+test('field trim fallback', t => {
+  t.plan(1)
+  const options = parseOptions({
+    trim: 'auto',
+    fields: [
+      { width: 1, trim: undefined },
+      { width: 1, trim: 'left' },
+      { width: 1, trim: 'right' },
+      { width: 1, trim: 'auto' },
+      { width: 1, trim: true },
+      { width: 1, trim: false }
+    ]
+  })
+  t.like(options, {
+    trim: 'auto',
+    fields: [
+      { trim: 'auto' },
+      { trim: 'left' },
+      { trim: 'right' },
+      { trim: 'auto' },
+      { trim: true },
+      { trim: false }
+    ]
+  })
 })

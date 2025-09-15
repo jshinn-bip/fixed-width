@@ -156,7 +156,8 @@ export function parseField (text, field, options, line) {
   const value = trimString(
     text.substring(index, index + field.width),
     field.pad,
-    options.trim
+    field.trim,
+    field.align
   )
   if (!field.cast) {
     return value
@@ -212,7 +213,7 @@ export function trim (value, pad) {
   return trimEnd(trimStart(value, pad), pad)
 }
 
-export function trimString (value, pad, mode) {
+export function trimString (value, pad, mode, align) {
   switch (mode) {
     case false:
       return value
@@ -220,6 +221,8 @@ export function trimString (value, pad, mode) {
       return trimStart(value, pad)
     case 'right':
       return trimEnd(value, pad)
+    case 'auto':
+      return align === 'right' ? trimStart(value, pad) : trimEnd(value, pad)
     default:
       return trim(value, pad)
   }

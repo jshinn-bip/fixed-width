@@ -36,7 +36,11 @@ export function parseOptions (options) {
     throw new Error('Ending line (to) must be greater or equal to the starting line (from)')
   }
 
-  const fields = parseFields(options.fields, pad, encoding)
+  const trim = options.trim === 'auto' || options.trim === 'left' || options.trim === 'right'
+    ? options.trim
+    : options.trim !== false
+
+  const fields = parseFields(options.fields, pad, trim)
   const width = getWidth(fields)
 
   const properties = fields.reduce(
@@ -63,28 +67,41 @@ export function parseOptions (options) {
     pad,
     skipEmptyLines: options.skipEmptyLines !== false,
     to,
-    trim: options.trim === 'left' || options.trim === 'right'
-      ? options.trim
-      : options.trim !== false,
+    trim,
     width
   }
 }
 
-function parseFields (items, pad, encoding) {
+function parseFields (items, pad, trim) {
   if (!Array.isArray(items)) {
     throw new TypeError('Fields option must be an array')
   }
   const fields = []
   let column = 1
   for (let i = 0; i < items.length; i++) {
-    const field = parseField(items[i], i, column, pad, encoding)
+    const field = parseField(items[i], i, column, pad, trim)
     fields.push(field)
     column += field.width
   }
   return fields
 }
 
-function parseField (field, index, defaultColumn, defaultPad, encoding) {
+function parseTrimOption (value, defaultValue = true) {
+  switch (value) {
+    case undefined:
+      return defaultValue
+    case true:
+    case false:
+    case 'auto':
+    case 'left':
+    case 'right':
+      return value
+    default:
+      throw new TypeError(`Invalid trim option: ${value}`)
+  }
+}
+
+function parseField (field, index, defaultColumn, defaultPad, defaultTrim) {
   if (typeof field !== 'object' || field === null) {
     throw new TypeError('Field definition must be an object')
   }
@@ -112,6 +129,7 @@ function parseField (field, index, defaultColumn, defaultPad, encoding) {
     pad,
     property: isPropertyKey(field.property) ? field.property : index,
     stringify: typeof field.stringify === 'function' ? field.stringify : null,
+    trim: parseTrimOption(field.trim, defaultTrim),
     width: field.width
   }
 }

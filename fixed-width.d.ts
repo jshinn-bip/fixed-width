@@ -72,11 +72,12 @@ export interface Options {
    * - `true`: trim the string
    * - `false`: do not trim the string
    * - `"left"`: trim the left of the string
-   * - `"right"`: trim the righe of the string
+   * - `"right"`: trim the right of the string
+   * - `"auto"`: guess trim by field's alignment
    *
    * @default true
    */
-  trim?: boolean | "left" | "right";
+  trim?: boolean | "left" | "right" | "auto";
 }
 
 export interface Field {
@@ -115,6 +116,17 @@ export interface Field {
    * If not specified, the parsed will output an array of values, and the stringifier will expect an array of values as input.
    */
   property?: string | Symbol;
+  /**
+   * String trimming when parsing.
+   * - `true`: trim the field's value
+   * - `false`: do not trim the field's value
+   * - `"left"`: trim the left of the field's value
+   * - `"right"`: trim the right of the field's value
+   * - `"auto"`: guess trim by field's alignment
+   * 
+   * Defaults to global `trim` option.
+   */
+  trim?: boolean | "left" | "right" | "auto";
   /**
    * Field width (chars). Required.
    */

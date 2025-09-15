@@ -147,6 +147,8 @@ test('trimString', t => {
   t.is(trimString('004200', '0', false), '004200')
   t.is(trimString('004200', '0', 'left'), '4200')
   t.is(trimString('004200', '0', 'right'), '0042')
+  t.is(trimString('004200', '0', 'auto', 'left'), '0042')
+  t.is(trimString('004200', '0', 'auto', 'right'), '4200')
 })
 
 test('guessEndOfLine', t => {
@@ -302,4 +304,40 @@ test('parse async iterable', async t => {
   for await (const data of output) {
     t.like(data, { value: 42 })
   }
+})
+
+test('issue #5', t => {
+  t.plan(2)
+
+  const text = 'BE12345     0004500'
+  const options = parseOptions({
+    fields: [
+      {
+        property: 'order_number',
+        width: 12
+      },
+      {
+        property: 'quantity',
+        width: 7,
+        align: 'right',
+        pad: '0',
+        trim: 'left'
+      }
+    ]
+  })
+  t.like(options, {
+    trim: true, // default
+    fields: [
+      { trim: true }, // fallback
+      { trim: 'left' } // explicit
+    ]
+  })
+
+  const result = parseField(
+    text,
+    options.fields[1],
+    options,
+    1
+  )
+  t.is(result, '4500')
 })

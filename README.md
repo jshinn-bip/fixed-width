@@ -353,9 +353,18 @@ Type: `<Boolean> | <String>`
 
 Default: `true`
 
-It enables or disabled values' trimming while parsing. You can also specify partial trims with `"left"` and `"right"` values. A `false` value will disable trimming.
+It enables or disables values' trimming while parsing. Possibles values are:
+
+- `true`: Trim the value from both sides (left and right)
+- `false`: Disable trim 
+- `"left"`: Trim value's left side
+- `"right"`: Trim value's right side
+- `"auto"`: Guess the trim side by looking at field's [`align`](#fieldalign) option:
+  - if `field.align: "right"` then trim left
+  - if `field.align: "left"` then trim right
 
 > The trimmed value corresponds to the field's [padding value](#pad).
+
 ```javascript
 trim('004200', { pad: '0', trim: 'right' })
 // the trimmed value will be '0042'
@@ -473,6 +482,15 @@ Field's width. Required.
 Type: `<Function>`
 
 A function that converts the field into a custom string. Useful for custom formatting, for example, formatting a Date into DD/MM/YYYY format. Only used while stringifying.
+
+#### `field.trim`
+
+Type: `<Boolean> | <String>`
+
+Default: fallbacks to global [`trim`](#trim) option value.
+
+Field-level `trim` option.
+See [`trim` option](#trim) docs.
 
 ## Errors
 
