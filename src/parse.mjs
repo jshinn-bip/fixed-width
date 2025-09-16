@@ -78,6 +78,18 @@ export class Parser {
       this.text = chunks.pop()
 
       for (const chunk of chunks) {
+        let outOfRange = false;
+        
+        if (this.options.from > 0 && this.line < this.options.from) outOfRange = true;
+        if (this.options.from < 0 && this.line < (chunks.length + 1 + this.options.from)) outOfRange = true;
+        if (this.options.to > 0 && this.line > this.options.to) outOfRange = true;
+        if (this.options.to < 0 && this.line > (chunks.length + 1 + this.options.to)) outOfRange = true;
+
+        if (outOfRange) {
+          this.line++;
+          continue;
+        }
+        
         if (chunk.length > 0 || !this.options.skipEmptyLines) {
           yield parseFields(
             chunk,
