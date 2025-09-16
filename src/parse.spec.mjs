@@ -343,6 +343,23 @@ test('issue #5', t => {
 })
 
 test('issue #6', t => {
+  const options0 = parseOptions({
+    fields: [
+      {
+        property: 'A',
+        width: 3
+      },
+      {
+        property: 'B',
+        width: 3
+      },
+      {
+        property: 'C',
+        width: 3
+      }
+    ]
+  })
+
   const options1 = parseOptions({
     from: 1,
     to: 1,
@@ -363,8 +380,7 @@ test('issue #6', t => {
   })
 
   const options2 = parseOptions({
-    from: 1,
-    to: 1,
+    from: -1,
     fields: [
       {
         property: 'G',
@@ -384,20 +400,39 @@ test('issue #6', t => {
   const text = ' a  b  c \n d  e  f \n g  h  i '
 
   t.deepEqual(
-    parseFields(text, options1),
-    {
+    parse(text, options0),
+    [{
       A: 'a',
       B: 'b',
       C: 'c'
-    }
+    },
+    {
+      A: 'd',
+      B: 'e',
+      C: 'f'
+    },
+    {
+      A: 'g',
+      B: 'h',
+      C: 'i'
+    }]
   )
 
   t.deepEqual(
-    parseFields(text, options2),
-    {
+    parse(text, options1),
+    [{
+      A: 'a',
+      B: 'b',
+      C: 'c'
+    }]
+  )
+
+  t.deepEqual(
+    parse(text, options2),
+    [{
       G: 'g',
       H: 'h',
       I: 'i'
-    }
+    }]
   )
 })

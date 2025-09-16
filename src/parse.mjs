@@ -43,20 +43,31 @@ export class Parser {
     this.decoder = new StringDecoder(this.options.encoding)
     this.line = 1
     this.text = ''
+    this.totalLines = 0;
   }
 
   * end () {
     if (this.text.length) {
-      yield parseFields(
-        this.text,
-        this.options,
-        this.line++
-      )
+      let outOfRange = false;
+
+      if (this.options.from > 0 && this.line < this.options.from) outOfRange = true;
+      if (this.options.from < 0 && this.line < (this.totalLines + 1 + this.options.from)) outOfRange = true;
+      if (this.options.to > 0 && this.line > this.options.to) outOfRange = true;
+      if (this.options.to < 0 && this.line > (this.totalLines + 1 + this.options.to)) outOfRange = true;
+
+      if (!outOfRange) {
+        yield parseFields(
+          this.text,
+          this.options,
+          this.line++
+        )
+      }
     }
 
     // Reset internal status
     this.text = ''
     this.line = 1
+    this.totalLines = 0;
   }
 
   * write (input) {
@@ -77,13 +88,17 @@ export class Parser {
       // Ignore last line (could be partial)
       this.text = chunks.pop()
 
+      this.totalLines = chunks.length;
+
+      if (this.text.length) this.totalLines += 1;
+
       for (const chunk of chunks) {
         let outOfRange = false;
         
         if (this.options.from > 0 && this.line < this.options.from) outOfRange = true;
-        if (this.options.from < 0 && this.line < (chunks.length + 1 + this.options.from)) outOfRange = true;
+        if (this.options.from < 0 && this.line < (this.totalLines + 1 + this.options.from)) outOfRange = true;
         if (this.options.to > 0 && this.line > this.options.to) outOfRange = true;
-        if (this.options.to < 0 && this.line > (chunks.length + 1 + this.options.to)) outOfRange = true;
+        if (this.options.to < 0 && this.line > (this.totalLines + 1 + this.options.to)) outOfRange = true;
 
         if (outOfRange) {
           this.line++;
