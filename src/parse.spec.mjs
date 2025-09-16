@@ -341,3 +341,63 @@ test('issue #5', t => {
   )
   t.is(result, '4500')
 })
+
+test('issue #6', t => {
+  const options1 = parseOptions({
+    from: 1,
+    to: 1,
+    fields: [
+      {
+        property: 'A',
+        width: 3
+      },
+      {
+        property: 'B',
+        width: 3
+      },
+      {
+        property: 'C',
+        width: 3
+      }
+    ]
+  })
+
+  const options2 = parseOptions({
+    from: 1,
+    to: 1,
+    fields: [
+      {
+        property: 'G',
+        width: 3
+      },
+      {
+        property: 'H',
+        width: 3
+      },
+      {
+        property: 'I',
+        width: 3
+      }
+    ]
+  })
+
+  const text = ' a  b  c \n d  e  f \n g  h  i '
+
+  t.deepEqual(
+    parseFields(text, options1),
+    {
+      A: 'a',
+      B: 'b',
+      C: 'c'
+    }
+  )
+
+  t.deepEqual(
+    parseFields(text, options2),
+    {
+      G: 'g',
+      H: 'h',
+      I: 'i'
+    }
+  )
+})
