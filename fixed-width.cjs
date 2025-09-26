@@ -60,9 +60,9 @@ function parseOptions (options) {
   if (!Number.isInteger(to) && to !== Number.POSITIVE_INFINITY) {
     throw new TypeError('Ending line (to) must be an integer or infinity')
   }
-  if (to < from) {
+  /*if (to < from) {
     throw new Error('Ending line (to) must be greater or equal to the starting line (from)')
-  }
+  }*/
 
   const trim = options.trim === 'auto' || options.trim === 'left' || options.trim === 'right'
     ? options.trim
