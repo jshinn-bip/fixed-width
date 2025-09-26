@@ -24,13 +24,13 @@ export function parseOptions (options) {
   }
 
   const from = options.from || 1
-  if (!isPositiveInteger(from)) {
-    throw new TypeError('Starting line (from) must be a positive integer')
+  if (!Number.isInteger(from)) {
+    throw new TypeError('Starting line (from) must be an integer')
   }
 
   const to = options.to || Number.POSITIVE_INFINITY
-  if (!isPositiveInteger(to) && to !== Number.POSITIVE_INFINITY) {
-    throw new TypeError('Ending line (to) must be a positive integer')
+  if (!Number.isInteger(to) && to !== Number.POSITIVE_INFINITY) {
+    throw new TypeError('Ending line (to) must be an integer or infinity')
   }
   if (to < from) {
     throw new Error('Ending line (to) must be greater or equal to the starting line (from)')
