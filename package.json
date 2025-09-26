@@ -1,5 +1,5 @@
 {
-  "name": "@evologi/fixed-width",
+  "name": "@bip-jshinn/evologi-fixed-width",
   "version": "1.2.0",
   "description": "A fixed-width file format toolset with streaming support and flexible options.",
   "type": "module",
